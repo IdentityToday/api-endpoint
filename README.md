@@ -6,7 +6,7 @@
 - [Go to get association status](#get-association-status)
 - [Go to add individual](#add-individual)
 
-<a id="add-association" style="display: block; margin-top: -50px; padding-top: 50px;"></a>
+<a id="add-association" style="display: block; margin-top: -50px; padding-top: 500px;"></a>
 
 ## Add association
 
@@ -138,7 +138,7 @@ GET /generate-screening-report
 
 The response contains a JSON object with a downloadURL field, which provides the URL for downloading the screening report.
 
-<a id="add-individual" style="display: block; margin-top: -50px; padding-top: 50px;"></a>
+<a id="add-individual" style="display: block; margin-top: -50px; padding-top: 500px;"></a>
 
 ## Add individual
 
