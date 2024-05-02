@@ -2,9 +2,9 @@
 
 ## Quick Navigation
 
-[Go to add association](#add-association)
-[Go to get association status](#get-association-status)
-[Go to add individual](#add-individual)
+- [Go to add association](#add-association)
+- [Go to get association status](#get-association-status)
+- [Go to add individual](#add-individual)
 
 <a id="add-association"></a>
 
