@@ -1,13 +1,3 @@
-<style>
-  .anchor {
-    display: block;
-    position: relative;
-    top: -100px;
-    visibility: hidden;
-    padding-top: 100px;
-  }
-</style>
-
 # API documentation for screening with IDToday
 
 ## Quick Navigation
@@ -16,7 +6,7 @@
 - [Go to get association status](#get-association-status)
 - [Go to add individual](#add-individual)
 
-<a id="add-association" class="anchor"></a>
+<a id="add-association" style="display: block; margin-top: -50px; padding-top: 50px;"></a>
 
 ## Add association
 
@@ -86,7 +76,7 @@ Example Request Body:
   - `caseId` (string): ID of the case.
   - `status` (string): Status of the association. `No Match` | `Potential Match` | `Match`
 
-<a id="get-association-status" class="anchor"></a>
+<a id="get-association-status" style="display: block; margin-top: -50px; padding-top: 50px;"></a>
 
 ## Get association status
 
@@ -148,7 +138,7 @@ GET /generate-screening-report
 
 The response contains a JSON object with a downloadURL field, which provides the URL for downloading the screening report.
 
-<a id="add-individual" class="anchor"></a>
+<a id="add-individual" style="display: block; margin-top: -50px; padding-top: 50px;"></a>
 
 ## Add individual
 
