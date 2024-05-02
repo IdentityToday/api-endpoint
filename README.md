@@ -8,7 +8,7 @@
 
 <a id="add-association"></a>
 
-##
+&nbsp;
 
 ## Add association
 
@@ -80,7 +80,7 @@ Example Request Body:
 
 <a id="get-association-status"></a>
 
-##
+&nbsp;
 
 ## Get association status
 
