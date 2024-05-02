@@ -357,9 +357,9 @@ Example Request Body:
   "error": "",
   "details": [
     {
-      "code": "custom",
-      "message": "Invalid base64 format for imageOfIdDocument",
-      "path": ["personalInformation", "imageOfIdDocument"]
+      "code": "",
+      "message": "",
+      "path": []
     }
   ]
 }
@@ -367,4 +367,4 @@ Example Request Body:
 
 - The response will contain the following fields:
   - `error` (string): message describing the error.
-  - `details` (array || undefined): list of objects that describe validation errors.
+  - `details` (array || undefined): list of objects that describe validation errors. This includes the error code, message describing the validation error and the path for example ["personalInformation", "dateOfBirth"]
