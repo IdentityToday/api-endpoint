@@ -315,8 +315,6 @@ This schema includes the following main sections:
    - For conveyancing profiles:
      - `employmentStatus`, `maritalStatus`, and `transactionRole` are required.
 
-Errors will throw a generic 'Data validation failed.' message if any condition is not met.
-
 Example Request Body:
 
 ```json
