@@ -228,8 +228,6 @@ POST /add-individual
 
 ###### `AddIndividualSchema` (Object)
 
-This schema includes the following main sections:
-
 - `businessId`: String
 - `profileTypes`: Array of `Profile Types Enums`
 
