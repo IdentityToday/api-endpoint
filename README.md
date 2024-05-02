@@ -339,7 +339,7 @@ Example Request Body:
 
 ```json
 {
-  "uid": ""
+  "uid": "123-abc-987-zyx"
 }
 ```
 
@@ -347,7 +347,7 @@ Example Request Body:
 
   - `uid` (string): unique identifier of the individual.
 
-- Status: 400/401/500
+- Status: 400 / 401 / 500
 - Content-Type: application/json
 
 ```json
@@ -355,9 +355,9 @@ Example Request Body:
   "error": "",
   "details": [
     {
-      "code": "",
-      "message": "",
-      "path": []
+      "code": "custom",
+      "message": "File size exceeds 2MB limit for imageOfIdDocument. File size: 2.8MB",
+      "path": ["personalInformation", "imageOfIdDocument"]
     }
   ]
 }
@@ -365,4 +365,4 @@ Example Request Body:
 
 - The response will contain the following fields:
   - `error` (string): message describing the error.
-  - `details` (array || undefined): list of objects that describe validation errors. This includes the error code, message describing the validation error and the path for example ["personalInformation", "dateOfBirth"]
+  - `details` (array OR undefined): list of objects that describe all validation errors. This will include the error code, message describing the error and the path.
