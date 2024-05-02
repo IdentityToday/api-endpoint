@@ -144,7 +144,7 @@ The response contains a JSON object with a downloadURL field, which provides the
 
 <a id="add-individual"></a>
 
-##
+&nbsp;
 
 ## Add individual
 
@@ -159,7 +159,7 @@ POST /add-individual
 
 ```
 
-#### Request Body
+#### Data Structure
 
 ##### Enums
 
@@ -226,14 +226,14 @@ POST /add-individual
 
 ##### Schema Structure
 
-###### `AddIndividualSchema`
+###### `AddIndividualSchema` (Object)
 
 This schema includes the following main sections:
 
 - `businessId`: String
 - `profileTypes`: Array of `Profile Types Enums`
 
-###### `personalInformation`
+###### `personalInformation` (Object)
 
 - `title`: String (optional)
 - `firstNames`: String
@@ -258,7 +258,7 @@ This schema includes the following main sections:
 - `homePhone`: String (optional)
 - Various proofs and documents as base64 encoded files (optional)
 
-###### `professionalInformation`
+###### `professionalInformation` (Object)
 
 - `employer`: String (optional)
 - `occupation`: String (optional)
@@ -275,12 +275,12 @@ This schema includes the following main sections:
 - `employmentStatus`: Enum (Employment Status Enums, optional)
 - Various dates related to employment history (optional)
 
-###### `BOFields`
+###### `BOFields` (Object)
 
 - `dateBOBecameRegisterable`: Date (optional)
 - `dateBOCeased`: Date (optional)
 
-###### `marriageInformation`
+###### `marriageInformation` (Object)
 
 - `spouseFullName`: String (optional)
 - `spouseIdNumber`: String (optional)
@@ -292,7 +292,7 @@ This schema includes the following main sections:
 - `maritalAgreement`: Enum (Marital Agreement Enums, optional)
 - `spouseIdDocument`: base64 encoded file (optional)
 
-###### `conveyancingFields`
+###### `conveyancingFields` (Object)
 
 - `transactionRole`: Enum (Transaction Role Enums, optional)
 - `bankName`: String (optional)
