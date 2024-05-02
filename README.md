@@ -1,5 +1,13 @@
 # API documentation for screening with IDToday
 
+## Quick Navigation
+
+[Go to add association](#add-association)
+[Go to get association status](#get-association-status)
+[Go to add individual](#add-individual)
+
+<a id="add-association"></a>
+
 ## Add association
 
 This endpoint is used to add an association. It is an HTTP POST request to the specified URL.
@@ -68,6 +76,8 @@ Example Request Body:
   - `caseId` (string): ID of the case.
   - `status` (string): Status of the association. `No Match` | `Potential Match` | `Match`
 
+<a id="get-association-status"></a>
+
 ## Get association status
 
 This endpoint makes an HTTP GET request to retrieve the status of a specific association. It requires the associationId as a query parameter in the URL.
@@ -127,6 +137,8 @@ GET /generate-screening-report
 ```
 
 The response contains a JSON object with a downloadURL field, which provides the URL for downloading the screening report.
+
+<a id="add-individual"></a>
 
 ## Add individual
 
