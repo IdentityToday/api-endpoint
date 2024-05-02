@@ -6,7 +6,9 @@
 - [Go to get association status](#get-association-status)
 - [Go to add individual](#add-individual)
 
-<a id="add-association" style="display: block; margin-top: -50px; padding-top: 500px;"></a>
+<a id="add-association"></a>
+
+##
 
 ## Add association
 
@@ -76,7 +78,9 @@ Example Request Body:
   - `caseId` (string): ID of the case.
   - `status` (string): Status of the association. `No Match` | `Potential Match` | `Match`
 
-<a id="get-association-status" style="display: block; margin-top: -50px; padding-top: 50px;"></a>
+<a id="get-association-status"></a>
+
+##
 
 ## Get association status
 
@@ -138,7 +142,9 @@ GET /generate-screening-report
 
 The response contains a JSON object with a downloadURL field, which provides the URL for downloading the screening report.
 
-<a id="add-individual" style="display: block; margin-top: -50px; padding-top: 500px;"></a>
+<a id="add-individual"></a>
+
+##
 
 ## Add individual
 
