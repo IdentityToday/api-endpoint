@@ -522,8 +522,8 @@ Defines the schema for an entity that is related to another entity. This schema 
 - `registeredNameOfEntity` (String)
 - `countryOfRegistration` (Enum)
 - `registrationDocument` (Base64, optional)
-- `registrationNumber` (String, optional)
-- `registeredAddress` (String, optional)
+- `registrationNumber` (String)
+- `registeredAddress` (String)
 - `email` (Email, optional)
 - `mobileNumber` (String, optional)
 
