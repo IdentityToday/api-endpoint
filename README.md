@@ -4,8 +4,10 @@
 
 - [Go to add association](#add-association)
 - [Go to get association status](#get-association-status)
+- [Go to generate screening report](#generate-screening-report)
 - [Go to add individual](#add-individual)
 - [Go to add entity](#add-entity)
+- [Go to get submission status](#get-submission-status)
 
 <a id="add-association"></a>
 
@@ -112,6 +114,10 @@ GET /status-association
 ```
 
 The JSON object contains a status field, with one of the following values: `No Match` | `Potential Match` | `Match`
+
+<a id="generate-screening-report"></a>
+
+&nbsp;
 
 ## Generate Screening Report
 
@@ -698,3 +704,38 @@ Example Request Body:
 - The response will contain the following fields:
   - `error` (string): message describing the error.
   - `details` (array OR undefined): list of objects that describe all validation errors. This will include the error code, message describing the error and the path.
+
+<a id="get-submission-status"></a>
+
+&nbsp;
+
+## Get submission status
+
+This endpoint is used to get the KYC status of a submission. It is an HTTP GET request to the specified URL.
+
+### Request
+
+#### Endpoint
+
+```plaintext
+GET /status-submission?submissionType={entities}&id={123}
+
+```
+
+#### Parameters
+
+- submissionType: (string) Either `entities` | `individuals` | `trusts`.
+- id: (string) If the submissionType is either `entities` or `trusts`, it should be the registration number. Otherwise if it's an `individual`, it should be their ID number (if Namibian) or passport number (if non-Namibian).
+
+### Response
+
+- Status: 200
+- Content-Type: application/json
+
+```json
+{
+  "status": "Pending"
+}
+```
+
+The JSON object contains a status field, with one of the following values: `Pending` | `Complete`
