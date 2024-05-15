@@ -725,7 +725,7 @@ GET /status-submission?submissionType={entities}&id={123}
 #### Parameters
 
 - submissionType: (string) Either `entities` | `individuals` | `trusts`.
-- id: (string) If the submissionType is either `entities` or `trusts`, it should be the registration number. Otherwise if it's an `individual`, it should be their ID number (if Namibian) or passport number (if non-Namibian).
+- id: (string) If the submissionType is either `entities` or `trusts`, it should be the registration number. Otherwise if it's `individuals`, it should be their ID number (if Namibian) or passport number (if non-Namibian).
 
 ### Response
 
