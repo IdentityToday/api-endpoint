@@ -253,6 +253,8 @@ POST /add-individual
 - `postalAddress`: String (optional)
 - `alternativeEmail`: String (email format, optional)
 - `homePhone`: String (optional)
+- `isPIP`: Boolean (optional)
+- `PIPCapacity`: String (required if `isPIPEntity` is true)
 - Various proofs and documents as base64 encoded files (optional)
 
 ###### `professionalInformation` (Object)
@@ -624,6 +626,8 @@ This is the main schema for adding an entity:
 - `closeCorporation`, `company`, `companyForeign`, `partnership`, `trust`, `associationsAndOtherEntities`: Conditionally included based on `entityType`
 - `documents`: Array of `DOCUMENT`
 - `conveyancingFields`: Optional `CONVEYANCING_FIELDS`
+- `isPIPEntity`: Boolean (optional)
+- `PIPCapacity`: String (required if `isPIPEntity` is true)
 
 ## Validation Logic
 
@@ -638,7 +642,7 @@ The schema includes complex validations such as:
 - Non-Namibian nationals must provide a passport number.
 - If 'Other' is selected as a source of income, `otherSourceOfIncome` must be provided and not be empty.
 - If 'Other' is selected as a source of funds, `otherSourceOfFunds` must be provided and not be empty.
-- If `hasPreviousSurname` is true, `previousSurname` is required.
+- If `isPIPEntity` is true then `PIPCapacity` is required.
 
 ## Usage
 
