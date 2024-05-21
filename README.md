@@ -324,8 +324,8 @@ POST /add-individual
 
 1. **Identity Document Validation**:
 
-   - Namibian nationals must provide an ID number and an image of their ID on the `imageOfIdDocument` field.
-   - Non-Namibian nationals must provide a passport number and an image of their passport on the `imageOfPassport` field.
+   - Namibian nationals must provide an ID number.
+   - Non-Namibian nationals must provide a passport number.
 
 2. **Financial Source Validation**:
 
