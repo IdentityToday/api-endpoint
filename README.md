@@ -253,6 +253,16 @@ POST /add-individual
 - `postalAddress`: String (optional)
 - `alternativeEmail`: String (email format, optional)
 - `homePhone`: String (optional)
+- `proofOfResidence`: Base64 (optional)
+- `imageOfIdDocument`: Base64 (optional)
+- `imageOfPassport`: Base64 (optional)
+- `proofOfFunds`: Base64 (optional)
+- `signature`: Base64 (optional)
+- `socialSecurity`: Base64 (optional)
+- `bankConfirmationLetter`: Base64 (optional)
+- `bankStatement`: Base64 (optional)
+- `proofOfIncome`: Base64 (optional)
+- `taxRegistrationCertificate`: Base64 (optional)
 - `isPIP`: Boolean (optional)
 - `PIPCapacity`: String (required if `isPIPEntity` is true)
 - Various proofs and documents as base64 encoded files (optional)
@@ -314,8 +324,8 @@ POST /add-individual
 
 1. **Identity Document Validation**:
 
-   - Namibian nationals must provide an ID number.
-   - Non-Namibian nationals must provide a passport number.
+   - Namibian nationals must provide an ID number and an image of their ID on the `imageOfIdDocument` field.
+   - Non-Namibian nationals must provide a passport number and an image of their passport on the `imageOfPassport` field.
 
 2. **Financial Source Validation**:
 
