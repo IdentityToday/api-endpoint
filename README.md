@@ -15,7 +15,7 @@
 
 ## Add association
 
-This endpoint is used to add an association. It is an HTTP POST request to the specified URL.
+This endpoint is used to add an association. It is an HTTPS POST request to the specified URL.
 
 ### Request
 
@@ -87,7 +87,7 @@ Example Request Body:
 
 ## Get association status
 
-This endpoint makes an HTTP GET request to retrieve the status of a specific association. It requires the associationId as a query parameter in the URL.
+This endpoint makes an HTTPS GET request to retrieve the status of a specific association. It requires the associationId as a query parameter in the URL.
 
 ### Request
 
@@ -121,7 +121,7 @@ The JSON object contains a status field, with one of the following values: `No M
 
 ## Generate Screening Report
 
-This API endpoint sends an HTTP GET request to retrieve a screening report for a specific association. The request should include the associationId as a query parameter in the URL. Upon successful execution, the API returns a JSON response with a downloadURL field that contains the URL for downloading the screening report. The screening report URL will only be returned if the association status is not `Potential Match`.
+This API endpoint sends an HTTPS GET request to retrieve a screening report for a specific association. The request should include the associationId as a query parameter in the URL. Upon successful execution, the API returns a JSON response with a downloadURL field that contains the URL for downloading the screening report. The screening report URL will only be returned if the association status is not `Potential Match`.
 
 ### Request
 
@@ -155,7 +155,7 @@ The response contains a JSON object with a downloadURL field, which provides the
 
 ## Add individual
 
-This endpoint is used to add an individual. It is an HTTP POST request to the specified URL.
+This endpoint is used to add an individual. It is an HTTPS POST request to the specified URL.
 
 ### Request
 
@@ -394,7 +394,7 @@ Example Request Body:
 
 ## Add entity
 
-This endpoint is used to add an entity. It is an HTTP POST request to the specified URL.
+This endpoint is used to add an entity. It is an HTTPS POST request to the specified URL.
 
 ### Request
 
@@ -715,7 +715,7 @@ Example Request Body:
 
 ## Get submission status
 
-This endpoint is used to get the KYC status of a submission. It is an HTTP GET request to the specified URL.
+This endpoint is used to get the KYC status of a submission. It is an HTTPS GET request to the specified URL.
 
 ### Request
 
