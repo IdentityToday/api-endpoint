@@ -34,12 +34,12 @@ Example Request Body:
 
 ```json
 {
-  "businessId": "",
+  "businessId": "abc",
   "type": "PERSON",
-  "name": "",
-  "surname": "",
-  "yearOfBirth": "",
-  "country": ""
+  "name": "John",
+  "surname": "Doe",
+  "yearOfBirth": 1990,
+  "country": "Namibia"
 }
 ```
 
@@ -47,10 +47,10 @@ Example Request Body:
 
 ```json
 {
-  "businessId": "",
+  "businessId": "abc",
   "type": "ENTITY",
-  "registeredNameOfEntity": "",
-  "country": ""
+  "registeredNameOfEntity": "Example Company",
+  "country": "Namibia"
 }
 ```
 
@@ -94,7 +94,7 @@ This endpoint makes an HTTPS GET request to retrieve the status of a specific as
 #### Endpoint
 
 ```plaintext
-GET /status-association
+GET /status-association?associationId={fc457f9b-bf2d-4245-b708-9dbaa7bda0ba}
 
 ```
 
@@ -128,7 +128,7 @@ This API endpoint sends an HTTPS GET request to retrieve a screening report for 
 #### Endpoint
 
 ```plaintext
-GET /generate-screening-report
+GET /generate-screening-report?associationId={fc457f9b-bf2d-4245-b708-9dbaa7bda0ba}
 
 ```
 
