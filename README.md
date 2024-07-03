@@ -13,7 +13,7 @@
 
 &nbsp;
 
-# _Self Service Screening Portal Endpoints_
+# _Screening Portal Endpoints_
 
 <a id="add-association"></a>
 
