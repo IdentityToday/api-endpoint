@@ -665,7 +665,8 @@ Example Request Body:
   "entityType": "Partnership",
   "entityGeneralInformation": {
     "registeredNameOfEntity": "Partner & Partner",
-    "countryOfRegistration": "Namibia"
+    "countryOfRegistration": "Namibia",
+    "registrationNumber": "123456"
   },
   "partnership": {
     "otherRelatedParties": [],
