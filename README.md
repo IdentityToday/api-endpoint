@@ -8,6 +8,12 @@
 - [Go to add individual](#add-individual)
 - [Go to add entity](#add-entity)
 - [Go to get submission status](#get-submission-status)
+- [Go to generate compliance dashboard screening report](#generate-cd-screening-report)
+- [Go to generate compliance dashboard kyc report](#generate-cd-kyc-report)
+
+&nbsp;
+
+# _Screening Portal Endpoints_
 
 <a id="add-association"></a>
 
@@ -34,12 +40,12 @@ Example Request Body:
 
 ```json
 {
-  "businessId": "",
+  "businessId": "abc",
   "type": "PERSON",
-  "name": "",
-  "surname": "",
-  "yearOfBirth": "",
-  "country": ""
+  "name": "John",
+  "surname": "Doe",
+  "yearOfBirth": 1990,
+  "country": "Namibia"
 }
 ```
 
@@ -47,10 +53,10 @@ Example Request Body:
 
 ```json
 {
-  "businessId": "",
+  "businessId": "abc",
   "type": "ENTITY",
-  "registeredNameOfEntity": "",
-  "country": ""
+  "registeredNameOfEntity": "Example Company",
+  "country": "Namibia"
 }
 ```
 
@@ -94,7 +100,7 @@ This endpoint makes an HTTPS GET request to retrieve the status of a specific as
 #### Endpoint
 
 ```plaintext
-GET /status-association
+GET /status-association?associationId={fc457f9b-bf2d-4245-b708-9dbaa7bda0ba}
 
 ```
 
@@ -128,7 +134,7 @@ This API endpoint sends an HTTPS GET request to retrieve a screening report for 
 #### Endpoint
 
 ```plaintext
-GET /generate-screening-report
+GET /generate-screening-report?associationId={fc457f9b-bf2d-4245-b708-9dbaa7bda0ba}
 
 ```
 
@@ -148,6 +154,10 @@ GET /generate-screening-report
 ```
 
 The response contains a JSON object with a downloadURL field, which provides the URL for downloading the screening report.
+
+&nbsp;
+
+# _Compliance Dashboard Endpoints_
 
 <a id="add-individual"></a>
 
@@ -754,3 +764,73 @@ GET /status-submission?submissionType={entities}&id={123}
 ```
 
 The JSON object contains a status field, with one of the following values: `Pending` | `Complete`
+
+<a id="generate-cd-screening-report"></a>
+
+&nbsp;
+
+## Generate Compliance Dashboard Screening Report
+
+This endpoint is used to get the Screening report of a submission. It is an HTTPS GET request to the specified URL.
+
+### Request
+
+#### Endpoint
+
+```plaintext
+GET /generate-cd-screening-report?submissionType={entities}&id={123}
+
+```
+
+#### Parameters
+
+- submissionType: (string) Either `entities` | `individuals` | `trusts`.
+- id: (string) If the submissionType is either `entities` or `trusts`, it should be the registration number. Otherwise if it's `individuals`, it should be their ID number (if Namibian) or passport number (if non-Namibian).
+
+### Response
+
+- Status: 200
+- Content-Type: application/json
+
+```json
+{
+  "downloadURL": ""
+}
+```
+
+The response contains a JSON object with a downloadURL field, which provides the URL for downloading the screening report from the Compliance Dashboard.
+
+<a id="generate-cd-kyc-report"></a>
+
+&nbsp;
+
+## Generate Compliance Dashboard KYC Report
+
+This endpoint is used to get the KYC report of a submission. It is an HTTPS GET request to the specified URL.
+
+### Request
+
+#### Endpoint
+
+```plaintext
+GET /generate-cd-kyc-report?submissionType={entities}&id={123}
+
+```
+
+#### Parameters
+
+- submissionType: (string) Either `entities` | `individuals` | `trusts`.
+- id: (string) If the submissionType is either `entities` or `trusts`, it should be the registration number. Otherwise if it's `individuals`, it should be their ID number (if Namibian) or passport number (if non-Namibian).
+
+### Response
+
+- Status: 200
+- Content-Type: application/json
+
+```json
+{
+  "downloadURL": ""
+}
+```
+
+The response contains a JSON object with a downloadURL field, which provides the URL for downloading the KYC report from the Compliance Dashboard.
