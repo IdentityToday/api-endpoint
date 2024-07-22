@@ -501,7 +501,7 @@ Captures the general information of an entity:
 - `registeredNameOfEntity`: String
 - `tradingName`: String (optional)
 - `countryOfRegistration`: Enum (Country Enums)
-- `registrationNumber`: String (optional)
+- `registrationNumber`: String
 - `registeredAddress`: String (optional)
 - `taxIdentificationNumber`: String (optional)
 - `VATNumber`: String (optional)
