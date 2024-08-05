@@ -239,6 +239,8 @@ POST /add-individual
 
 - `businessId`: String
 - `profileTypes`: Array of `Profile Types Enums`
+- `salesChannel`: String (optional)
+- `product`: String (optional)
 
 ###### `personalInformation` (Object)
 
@@ -702,13 +704,17 @@ Example Request Body:
 
 ```json
 {
-  "uid": "123-abc-987-zyx"
+  "uid": "123-abc-987-zyx",
+  "riskRating": "high",
+  "screeningResult": "Match"
 }
 ```
 
 - The response will contain the following fields:
 
   - `uid` (string): unique identifier of the entity.
+  - `riskRating` (string): `unassigned` | `low` | `medium` | `high`
+  - `screeningResult` (string): `No Natch` | `No Match (Manual)` | `Potential Match` | `Match`
 
 - Status: 400 / 401 / 500
 - Content-Type: application/json
@@ -759,11 +765,17 @@ GET /status-submission?submissionType={entities}&id={123}
 
 ```json
 {
-  "status": "Pending"
+  "status": "Pending",
+  "riskRating": "high",
+  "screeningResult": "Match"
 }
 ```
 
-The JSON object contains a status field, with one of the following values: `Pending` | `Complete`
+- The response will contain the following fields:
+
+  - `status` (string): `Pending` | `Complete`
+  - `riskRating` (string): `unassigned` | `low` | `medium` | `high`
+  - `screeningResult` (string): `No Natch` | `No Match (Manual)` | `Potential Match` | `Match`
 
 <a id="generate-cd-screening-report"></a>
 
