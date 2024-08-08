@@ -382,7 +382,9 @@ Example Request Body:
 
 ```json
 {
-  "uid": "123-abc-987-zyx"
+  "uid": "123-abc-987-zyx",
+  "riskRating": "low",
+  "screeningResult": "No Match"
 }
 ```
 
