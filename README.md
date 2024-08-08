@@ -391,6 +391,8 @@ Example Request Body:
 - The response will contain the following fields:
 
   - `uid` (string): unique identifier of the individual.
+  - `riskRating` (low | medium | high | unassigned): automated risk rating result (if applicable).
+  - `screeningResult` (Potential Match | No Match): Screening result from Dow Jones.
 
 - Status: 400 / 401 / 500
 - Content-Type: application/json
