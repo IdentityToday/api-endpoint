@@ -24,6 +24,7 @@
 - 'Bosnia and Herzegovina',
 - 'Botswana',
 - 'Brazil',
+- 'British Indian Ocean Territory',
 - 'Brunei',
 - 'Bulgaria',
 - 'Burkina Faso',
