@@ -807,7 +807,7 @@ GET /generate-cd-screening-report?submissionType={entities}&id={123}
 #### Parameters
 
 - submissionType: (string) Either `entities` | `individuals` | `trusts`.
-- id: (string) If the submissionType is either `entities` or `trusts`, it should be the registration number. Otherwise if it's `individuals`, it should be their ID number (if Namibian) or passport number (if non-Namibian).
+- id: (string) This is the uid of the submission.
 
 ### Response
 
@@ -842,7 +842,7 @@ GET /generate-cd-kyc-report?submissionType={entities}&id={123}
 #### Parameters
 
 - submissionType: (string) Either `entities` | `individuals` | `trusts`.
-- id: (string) If the submissionType is either `entities` or `trusts`, it should be the registration number. Otherwise if it's `individuals`, it should be their ID number (if Namibian) or passport number (if non-Namibian).
+- id: (string) This is the uid of the submission.
 
 ### Response
 
