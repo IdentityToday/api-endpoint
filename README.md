@@ -768,18 +768,24 @@ GET /status-submission?submissionType={entities}&id={123}
 - Content-Type: application/json
 
 ```json
-{
-  "status": "Pending",
-  "riskRating": "high",
-  "screeningResult": "Match"
-}
+[
+  {
+    "status": "Pending",
+    "riskRating": "high",
+    "screeningResult": "Match",
+    "uid": "26f99722-4bd8-4e13-t478-3437dec5a623",
+    "createdAt": "2024-08-06T08:51:12.491Z"
+  }
+]
 ```
 
-- The response will contain the following fields:
+- The response will contain an array of objects with the following fields:
 
   - `status` (string): `Pending` | `Complete`
   - `riskRating` (string): `unassigned` | `low` | `medium` | `high`
   - `screeningResult` (string): `No Natch` | `No Match (Manual)` | `Potential Match` | `Match`
+  - `uid` (string)
+  - `createdAt` (string)
 
 <a id="generate-cd-screening-report"></a>
 
