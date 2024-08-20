@@ -768,18 +768,24 @@ GET /status-submission?submissionType={entities}&id={123}
 - Content-Type: application/json
 
 ```json
-{
-  "status": "Pending",
-  "riskRating": "high",
-  "screeningResult": "Match"
-}
+[
+  {
+    "status": "Pending",
+    "riskRating": "high",
+    "screeningResult": "Match",
+    "uid": "26f99722-4bd8-4e13-t478-3437dec5a623",
+    "createdAt": "2024-08-06T08:51:12.491Z"
+  }
+]
 ```
 
-- The response will contain the following fields:
+- The response will contain an array of objects with the following fields:
 
   - `status` (string): `Pending` | `Complete`
   - `riskRating` (string): `unassigned` | `low` | `medium` | `high`
   - `screeningResult` (string): `No Natch` | `No Match (Manual)` | `Potential Match` | `Match`
+  - `uid` (string)
+  - `createdAt` (string)
 
 <a id="generate-cd-screening-report"></a>
 
@@ -801,7 +807,7 @@ GET /generate-cd-screening-report?submissionType={entities}&id={123}
 #### Parameters
 
 - submissionType: (string) Either `entities` | `individuals` | `trusts`.
-- id: (string) If the submissionType is either `entities` or `trusts`, it should be the registration number. Otherwise if it's `individuals`, it should be their ID number (if Namibian) or passport number (if non-Namibian).
+- id: (string) This is the uid of the submission.
 
 ### Response
 
@@ -836,7 +842,7 @@ GET /generate-cd-kyc-report?submissionType={entities}&id={123}
 #### Parameters
 
 - submissionType: (string) Either `entities` | `individuals` | `trusts`.
-- id: (string) If the submissionType is either `entities` or `trusts`, it should be the registration number. Otherwise if it's `individuals`, it should be their ID number (if Namibian) or passport number (if non-Namibian).
+- id: (string) This is the uid of the submission.
 
 ### Response
 
