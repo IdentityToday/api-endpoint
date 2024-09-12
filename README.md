@@ -3,6 +3,7 @@
 ## Quick Navigation
 
 - [Go to add association](#add-association)
+- [Go to delete association](#delete-association)
 - [Go to get association status](#get-association-status)
 - [Go to generate screening report](#generate-screening-report)
 - [Go to add individual](#add-individual)
@@ -10,6 +11,12 @@
 - [Go to get submission status](#get-submission-status)
 - [Go to generate compliance dashboard screening report](#generate-cd-screening-report)
 - [Go to generate compliance dashboard kyc report](#generate-cd-kyc-report)
+
+&nbsp;
+
+# Authentication
+
+For all our endpoints we require you to add `x-api-key` to your request headers along with the API key we provide for you.
 
 &nbsp;
 
@@ -85,7 +92,37 @@ Example Request Body:
 - The response will contain the following fields:
   - `associationId` (string): ID of the association.
   - `caseId` (string): ID of the case.
-  - `status` (string): Status of the association. `No Match` | `Potential Match` | `Match`
+  - `status` (string): Status of the association. `No Match` | `No Match (Manual)` | `Potential Match` | `Match`
+
+<a id="delete-association"></a>
+
+&nbsp;
+
+## Delete association
+
+This endpoint makes an HTTPS DELETE request to delete a specific association. It requires the associationId as a query parameter in the URL.
+
+### Request
+
+#### Endpoint
+
+```plaintext
+DELETE /delete-association?associationId=fc457f9b-bf2d-4245-b708-9dbaa7bda0ba
+
+```
+
+#### Parameters
+
+- associationId: (string) The unique identifier of the association.
+
+### Response
+
+- Status: 200
+- Content-Type: application/json
+
+```json
+{}
+```
 
 <a id="get-association-status"></a>
 
