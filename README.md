@@ -152,11 +152,13 @@ GET /status-association?associationId={fc457f9b-bf2d-4245-b708-9dbaa7bda0ba}
 
 ```json
 {
-  "status": ""
+  "status": "Match",
+  "riskIcons": ["SI", "AM"]
 }
 ```
 
-The JSON object contains a status field, with one of the following values: `No Match` | `Potential Match` | `Match`
+The JSON object contains a status field, with one of the following values: `No Match` | `Potential Match` | `Match` and a `riskIcons` field ONLY if the status is `Match`.
+To learn more about risk icons you can click on the following [link](https://www.factiva.com/CP_Developer/Producthelp/RnCHelp/Search/Complete_List_of_Risk_Icons.htm).
 
 <a id="generate-screening-report"></a>
 
