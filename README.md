@@ -14,6 +14,13 @@
 
 &nbsp;
 
+# Endpoints
+
+Prod: https://io.identitytoday.com.na
+Staging: https://apigateway-gateway-dlvfma70.uc.gateway.dev
+
+&nbsp;
+
 # Authentication
 
 For all our endpoints we require you to add `x-api-key` to your request headers along with the API key we provide for you.
