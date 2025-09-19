@@ -294,13 +294,13 @@ POST /add-individual
 - `firstNames`: String
 - `surname`: String
 - `dateOfBirth`: Date
-- `nationality`: Enum (Country Enums)
-- `countryOfBirth`: Enum (Country Enums, optional)
+- `nationality`: Enum ([Country Enums](COUNTRIES.md#country-enums))
+- `countryOfBirth`: Enum ([Country Enums](COUNTRIES.md#country-enums), optional)
 - `placeOfBirth`: String (optional)
 - `hasPreviousSurname`: Boolean (optional)
 - `previousSurname`: String (optional)
 - `idNumber`: String (optional)
-- `countryIssuingIdentification`: Enum (Country Enums, optional)
+- `countryIssuingIdentification`: Enum ([Country Enums](COUNTRIES.md#country-enums), optional)
 - `passportNumber`: String (optional)
 - `passportExpiryDate`: String (optional)
 - `foreignNationalIDNumber`: String (optional)
@@ -375,7 +375,7 @@ POST /add-individual
 - `paymentMethod`: Array of `Payment Methods Enums` (optional)
 - `transactionFrequency`: String (optional)
 - `transactionAmount`: String (optional)
-- `conveyancingCountryInvolved`: Enum (Country Enums, optional)
+- `conveyancingCountryInvolved`: Enum ([Country Enums](COUNTRIES.md#country-enums), optional)
 - `partyRelationship`: String (optional)
 
 ###### Validation Logic
@@ -552,7 +552,7 @@ Captures the general information of an entity:
 
 - `registeredNameOfEntity`: String
 - `tradingName`: String (optional)
-- `countryOfRegistration`: Enum (Country Enums)
+- `countryOfRegistration`: Enum ([Country Enums](COUNTRIES.md#country-enums))
 - `registrationNumber`: String
 - `registeredAddress`: String (optional)
 - `taxIdentificationNumber`: String (optional)
@@ -684,7 +684,7 @@ These schemas define the specific data requirements for various entity types suc
 - `paymentMethod`: Array of `Payment Methods Enums` (optional)
 - `transactionFrequency`: String (optional)
 - `transactionAmount`: String (optional)
-- `conveyancingCountryInvolved`: Enum (Country Enums, optional)
+- `conveyancingCountryInvolved`: Enum ([Country Enums](COUNTRIES.md#country-enums), optional)
 - `partyRelationship`: String (optional)
 
 ### `AddEntitySchema`
