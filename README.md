@@ -287,6 +287,7 @@ POST /add-individual
 - `profileTypes`: Array of `Profile Types Enums`
 - `salesChannel`: String (optional)
 - `product`: String (optional)
+- `source_id`: String (optional)
 
 ###### `personalInformation` (Object)
 
