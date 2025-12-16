@@ -82,6 +82,8 @@ Example Request Body:
   - `registeredNameOfEntity` (string): Registered name of entity associated. _(Required if type = ENTITY)_
   - `yearOfBirth` (integer): Year of birth of the individual associated.
   - `country` (string): Nationality of the individual associated. _(Required)_
+  - `source_id` (string): A user defined source of person/entity _(Optional)_
+  - `clientRef` (string): A user defined identifier _(Optional)_
 
 #### Response
 
