@@ -42,10 +42,10 @@ This endpoint is used to add an association. It is an HTTPS POST request to the 
 
 #### Endpoint
 
-​```plaintext
+```plaintext
 POST /add-association
 
-​```
+```
 
 #### Request Body
 
@@ -53,7 +53,7 @@ Example Request Body:
 
 - INDIVIDUAL
 
-​```json
+```json
 {
   "businessId": "abc",
   "type": "PERSON",
@@ -62,18 +62,18 @@ Example Request Body:
   "yearOfBirth": 1990,
   "country": "Namibia"
 }
-​```
+```
 
 - ENTITY
 
-​```json
+```json
 {
   "businessId": "abc",
   "type": "ENTITY",
   "registeredNameOfEntity": "Example Company",
   "country": "Namibia"
 }
-​```
+```
 
 - The request should include the following parameters in the raw request body:
   - `businessId` (string): The ID of the business. _(Required)_
@@ -91,13 +91,13 @@ Example Request Body:
 - Status: 200
 - Content-Type: application/json
 
-​```json
+```json
 {
   "associationId": "",
   "caseId": "",
   "status": ""
 }
-​```
+```
 
 - The response will contain the following fields:
   - `associationId` (string): ID of the association.
@@ -116,10 +116,10 @@ This endpoint makes an HTTPS DELETE request to delete a specific association. It
 
 #### Endpoint
 
-​```plaintext
+```plaintext
 DELETE /delete-association?associationId=fc457f9b-bf2d-4245-b708-9dbaa7bda0ba
 
-​```
+```
 
 #### Parameters
 
@@ -130,9 +130,9 @@ DELETE /delete-association?associationId=fc457f9b-bf2d-4245-b708-9dbaa7bda0ba
 - Status: 200
 - Content-Type: application/json
 
-​```json
+```json
 {}
-​```
+```
 
 <a id="get-association-status"></a>
 
@@ -146,10 +146,10 @@ This endpoint makes an HTTPS GET request to retrieve the status of a specific as
 
 #### Endpoint
 
-​```plaintext
+```plaintext
 GET /status-association?associationId={fc457f9b-bf2d-4245-b708-9dbaa7bda0ba}
 
-​```
+```
 
 #### Parameters
 
@@ -160,12 +160,12 @@ GET /status-association?associationId={fc457f9b-bf2d-4245-b708-9dbaa7bda0ba}
 - Status: 200
 - Content-Type: application/json
 
-​```json
+```json
 {
   "status": "Match",
   "riskIcons": ["SI", "AM"]
 }
-​```
+```
 
 The JSON object contains a status field, with one of the following values: `No Match` | `Potential Match` | `Match` and a `riskIcons` field ONLY if the status is `Match`.
 To learn more about risk icons you can click on the following <a href="https://www.factiva.com/CP_Developer/Producthelp/RnCHelp/Search/Complete_List_of_Risk_Icons.htm" target="_blank">link</a>.
@@ -182,10 +182,10 @@ This API endpoint sends an HTTPS GET request to retrieve a screening report for 
 
 #### Endpoint
 
-​```plaintext
+```plaintext
 GET /generate-screening-report?associationId={fc457f9b-bf2d-4245-b708-9dbaa7bda0ba}
 
-​```
+```
 
 #### Query Parameters
 
@@ -196,11 +196,11 @@ GET /generate-screening-report?associationId={fc457f9b-bf2d-4245-b708-9dbaa7bda0
 - Status: 200
 - Content-Type: application/json
 
-​```json
+```json
 {
   "downloadURL": ""
 }
-​```
+```
 
 The response contains a JSON object with a downloadURL field, which provides the URL for downloading the screening report.
 
@@ -220,10 +220,10 @@ This endpoint is used to add an individual. It is an HTTPS POST request to the s
 
 #### Endpoint
 
-​```plaintext
+```plaintext
 POST /add-individual
 
-​```
+```
 
 #### Data Structure
 
@@ -410,7 +410,7 @@ POST /add-individual
 
 Example Request Body:
 
-​```json
+```json
 {
   "businessId": "123",
   "profileTypes": ["kyc"],
@@ -423,20 +423,20 @@ Example Request Body:
     "idNumber": "12345678910"
   }
 }
-​```
+```
 
 #### Response
 
 - Status: 201
 - Content-Type: application/json
 
-​```json
+```json
 {
   "uid": "123-abc-987-zyx",
   "riskRating": "low",
   "screeningResult": "No Match"
 }
-​```
+```
 
 - The response will contain the following fields:
 
@@ -447,7 +447,7 @@ Example Request Body:
 - Status: 400 / 401 / 500
 - Content-Type: application/json
 
-​```json
+```json
 {
   "error": "",
   "details": [
@@ -458,7 +458,7 @@ Example Request Body:
     }
   ]
 }
-​```
+```
 
 - The response will contain the following fields:
   - `error` (string): message describing the error.
@@ -478,10 +478,10 @@ If a name (`fullNames` or `surname`) or `dateOfBirth` change is detected, the in
 
 #### Endpoint
 
-​```plaintext
+```plaintext
 PATCH /patch-individual?id={123-abc-987-zyx}
 
-​```
+```
 
 #### Query Parameters
 
@@ -509,7 +509,7 @@ PATCH /patch-individual?id={123-abc-987-zyx}
 
 Example Request Body — Update personal information:
 
-​```json
+```json
 {
   "personalInformation": {
     "fullNames": "John Michael",
@@ -517,15 +517,15 @@ Example Request Body — Update personal information:
     "dateOfBirth": "1990-01-01"
   }
 }
-​```
+```
 
 Example Request Body — Deactivate individual:
 
-​```json
+```json
 {
   "deactivate": true
 }
-​```
+```
 
 ### Response
 
@@ -534,12 +534,12 @@ Example Request Body — Deactivate individual:
 - Status: 200
 - Content-Type: application/json
 
-​```json
+```json
 {
   "message": "Individual updated successfully",
   "rescreened": true
 }
-​```
+```
 
 - The response will contain the following fields:
   - `message` (string): Confirmation message.
@@ -550,18 +550,18 @@ Example Request Body — Deactivate individual:
 - Status: 200
 - Content-Type: application/json
 
-​```json
+```json
 {
   "message": "Individual deactivated successfully"
 }
-​```
+```
 
 #### Error responses
 
 - Status: 400 / 401 / 404 / 500
 - Content-Type: application/json
 
-​```json
+```json
 {
   "error": "Invalid request body",
   "details": [
@@ -572,7 +572,7 @@ Example Request Body — Deactivate individual:
     }
   ]
 }
-​```
+```
 
 - The response will contain the following fields:
   - `error` (string): message describing the error. Common values: `Invalid request type`, `Invalid uid`, `Invalid request body`, `No valid fields provided for update`, `Individual not found`, `Failed to update individual`.
@@ -590,10 +590,10 @@ This endpoint is used to add an entity. It is an HTTPS POST request to the speci
 
 #### Endpoint
 
-​```plaintext
+```plaintext
 POST /add-entity
 
-​```
+```
 
 #### Data Structure
 
@@ -838,7 +838,7 @@ The schema includes complex validations such as:
 
 Example Request Body:
 
-​```json
+```json
 {
   "businessId": "33",
   "profileTypes": ["kyc"],
@@ -863,20 +863,20 @@ Example Request Body:
     ]
   }
 }
-​```
+```
 
 #### Response
 
 - Status: 201
 - Content-Type: application/json
 
-​```json
+```json
 {
   "uid": "123-abc-987-zyx",
   "riskRating": "high",
   "screeningResult": "Match"
 }
-​```
+```
 
 - The response will contain the following fields:
 
@@ -887,7 +887,7 @@ Example Request Body:
 - Status: 400 / 401 / 500
 - Content-Type: application/json
 
-​```json
+```json
 {
   "error": "",
   "details": [
@@ -898,7 +898,7 @@ Example Request Body:
     }
   ]
 }
-​```
+```
 
 - The response will contain the following fields:
   - `error` (string): message describing the error.
@@ -916,10 +916,10 @@ This endpoint is used to get the KYC status of a submission. It is an HTTPS GET 
 
 #### Endpoint
 
-​```plaintext
+```plaintext
 GET /status-submission?submissionType={entities}&id={123}
 
-​```
+```
 
 #### Parameters
 
@@ -931,7 +931,7 @@ GET /status-submission?submissionType={entities}&id={123}
 - Status: 200
 - Content-Type: application/json
 
-​```json
+```json
 [
   {
     "status": "Pending",
@@ -941,7 +941,7 @@ GET /status-submission?submissionType={entities}&id={123}
     "createdAt": "2024-08-06T08:51:12.491Z"
   }
 ]
-​```
+```
 
 - The response will contain an array of objects with the following fields:
 
@@ -963,10 +963,10 @@ This endpoint is used to get the Screening report of a submission. It is an HTTP
 
 #### Endpoint
 
-​```plaintext
+```plaintext
 GET /generate-cd-screening-report?submissionType={entities}&id={123}
 
-​```
+```
 
 #### Parameters
 
@@ -978,11 +978,11 @@ GET /generate-cd-screening-report?submissionType={entities}&id={123}
 - Status: 200
 - Content-Type: application/json
 
-​```json
+```json
 {
   "downloadURL": ""
 }
-​```
+```
 
 The response contains a JSON object with a downloadURL field, which provides the URL for downloading the screening report from the Compliance Dashboard.
 
@@ -998,10 +998,10 @@ This endpoint is used to get the KYC report of a submission. It is an HTTPS GET 
 
 #### Endpoint
 
-​```plaintext
+```plaintext
 GET /generate-cd-kyc-report?submissionType={entities}&id={123}
 
-​```
+```
 
 #### Parameters
 
@@ -1013,10 +1013,10 @@ GET /generate-cd-kyc-report?submissionType={entities}&id={123}
 - Status: 200
 - Content-Type: application/json
 
-​```json
+```json
 {
   "downloadURL": ""
 }
-​```
+```
 
 The response contains a JSON object with a downloadURL field, which provides the URL for downloading the KYC report from the Compliance Dashboard.
