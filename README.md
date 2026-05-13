@@ -382,21 +382,21 @@ POST /add-individual
 - `conveyancingCountryInvolved`: Enum ([Country Enums](COUNTRIES.md#country-enums), optional)
 - `partyRelationship`: String (optional)
 
-###### Validation Logic
+#### Validation Logic
 
 1. **Identity Document Validation**:
-
-   - Namibian nationals must provide an ID number.
-   - Non-Namibian nationals must provide a passport number.
+   - If `nationality` is "Namibia" then `idNumber` is required.
+   - If `nationality` is not "Namibia", the following fields are required instead of `idNumber`:
+     - `passportNumber`: String
+     - `passportExpiryDate`: String
+     - `foreignNationalIDNumber`: String
 
 2. **Financial Source Validation**:
-
    - For KYC and Conveyancing profiles:
      - If 'Other' is selected as a source of income, `otherSourceOfIncome` must be provided and not be empty.
      - If 'Other' is selected as a source of funds, `otherSourceOfFunds` must be provided and not be empty.
 
 3. **Previous Surname Validation**:
-
    - If `hasPreviousSurname` is true, `previousSurname` is required.
 
 4. **Conveyancing Validation**:
@@ -439,7 +439,6 @@ Example Request Body:
 ```
 
 - The response will contain the following fields:
-
   - `uid` (string): unique identifier of the individual.
   - `riskRating` (low | medium | high | unassigned): automated risk rating result (if applicable).
   - `screeningResult` (Potential Match | No Match): Screening result from Dow Jones.
@@ -879,7 +878,6 @@ Example Request Body:
 ```
 
 - The response will contain the following fields:
-
   - `uid` (string): unique identifier of the entity.
   - `riskRating` (string): `unassigned` | `low` | `medium` | `high`
   - `screeningResult` (string): `No Natch` | `No Match (Manual)` | `Potential Match` | `Match`
@@ -944,7 +942,6 @@ GET /status-submission?submissionType={entities}&id={123}
 ```
 
 - The response will contain an array of objects with the following fields:
-
   - `status` (string): `Pending` | `Complete`
   - `riskRating` (string): `unassigned` | `low` | `medium` | `high`
   - `screeningResult` (string): `No Natch` | `No Match (Manual)` | `Potential Match` | `Match`
