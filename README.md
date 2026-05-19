@@ -804,6 +804,11 @@ These schemas define the specific data requirements for various entity types suc
 - `conveyancingCountryInvolved`: Enum ([Country Enums](COUNTRIES.md#country-enums), optional)
 - `partyRelationship`: String (optional)
 
+###### `DOCUMENT` (Object)
+
+- `name`: String
+- `file`: Base64
+
 ### `AddEntitySchema`
 
 This is the main schema for adding an entity:
