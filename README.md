@@ -593,23 +593,6 @@ Example Request Body — Update legacy `fullNames` field and trigger re-screenin
 }
 ```
 
-Example Request Body — Update non-screening fields:
-
-```json
-{
-  "personalInformation": {
-    "title": "Mr",
-    "email": "john@example.com",
-    "mobileNumber": "+264812345678",
-    "residentialAddress": "123 Example Street",
-    "postalAddress": "PO Box 123",
-    "employer": "Example Employer",
-    "occupation": "Developer",
-    "sourceOfIncome": ["Salary"],
-    "sourceOfFunds": ["Savings"]
-  }
-}
-```
 
 Example Request Body — Update PIP information:
 
