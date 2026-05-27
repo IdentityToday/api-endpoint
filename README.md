@@ -469,11 +469,13 @@ Example Request Body:
 
 ## Patch individual
 
-This endpoint is used to update an existing individual submission, or to deactivate an individual. It is an HTTPS PATCH request to the specified URL. The individual to update is identified by their `uid` returned from `/add-individual`, provided as a query parameter.
+This endpoint is used to update an existing individual submission, or to deactivate an individual. It is an HTTPS `PATCH` request to the specified URL.
 
-If `firstNames`, `fullNames`, `surname`, or `dateOfBirth` changes, the individual will be automatically re-screened against Dow Jones and the underlying association/case will be replaced.
+The individual to update is identified by their `uid` returned from `/add-individual`, provided as a query parameter.
 
-`firstNames` is the preferred field name. `fullNames` remains supported as a backwards-compatible alias. If both `firstNames` and `fullNames` are provided, they must contain the same value.
+If a first name (`firstNames` or the legacy alias `fullNames`), `surname`, or `dateOfBirth` change is detected, the individual will automatically be re-screened against Dow Jones and the underlying association/case will be replaced.
+
+`product` is patched as a top-level field, matching the `/add-individual` request structure.
 
 ### Request
 
@@ -485,93 +487,119 @@ PATCH /patch-individual?id={123-abc-987-zyx}
 
 #### Query Parameters
 
-- `id`: (string, required) The `uid` of the individual to update.
+- `id`: String, required. The `uid` of the individual to update.
 
-#### Request Body
+#### Data Structure
+
+##### Enums and Types
+
+###### Capital Sources Enums
+
+- Business Proceeds
+- Commission
+- Foreign Remittance
+- Savings
+- Salary
+- Bonus
+- Consultancy fees
+- Allowance / Donation
+- Inheritance
+- Dividends / Profit share
+- Board and sitting fees
+- Rental income
+- Investment income/returns
+- Pension
+- Sale of property
+- Loan
+- Other
 
 ##### Schema Structure
 
-###### `PatchIndividualSchema` (Object)
+###### `PatchIndividualSchema` Object
 
-- `personalInformation` (Object, optional)
-- `deactivate`: Boolean (optional) — when `true`, deactivates the individual.
+- `personalInformation`: Object, optional
+- `professionalInformation`: Object, optional
+- `product`: String, optional
+- `deactivate`: Boolean, optional. When `true`, deactivates the individual.
 
-###### `personalInformation` (Object)
+###### `personalInformation` Object
 
-All fields are optional. Only fields provided in the request will be patched.
+- `title`: String, optional
+- `firstNames`: String, optional
+- `fullNames`: String, optional. Legacy alias for `firstNames`.
+- `surname`: String, optional
+- `dateOfBirth`: Date, optional. ISO date format, for example `YYYY-MM-DD`
+- `nationality`: Enum ([Country Enums](COUNTRIES.md#country-enums)), optional
+- `idNumber`: String, optional
+- `passportNumber`: String, optional
+- `passportExpiryDate`: String, optional
+- `foreignNationalIDNumber`: String, optional
+- `taxIdentificationNumber`: String, optional
+- `email`: String, email format, optional
+- `mobileNumber`: String, optional
+- `residentialAddress`: String, optional
+- `postalAddress`: String, optional
+- `isPIP`: Boolean, optional
+- `PIPCapacity`: String, required if the final merged value of `isPIP` is `true`
+- `proofOfResidence`: Base64, optional
+- `imageOfIdDocument`: Base64, optional
+- `imageOfPassport`: Base64, optional
+- `proofOfFunds`: Base64, optional
+- `bankConfirmationLetter`: Base64, optional
+- `bankStatement`: Base64, optional
+- `proofOfIncome`: Base64, optional
+- `taxRegistrationCertificate`: Base64, optional
 
-- `title`: String (optional)
-- `firstNames`: String (optional) — preferred field name
-- `fullNames`: String (optional) — legacy alias for `firstNames`, retained for backwards compatibility
-- `surname`: String (optional)
-- `dateOfBirth`: Date (optional) — ISO date format, e.g. `YYYY-MM-DD`
-- `nationality`: Enum ([Country Enums](COUNTRIES.md#country-enums), optional)
-- `idNumber`: String (optional)
-- `passportNumber`: String (optional)
-- `passportExpiryDate`: String (optional)
-- `foreignNationalIDNumber`: String (optional)
-- `taxIdentificationNumber`: String (optional)
-- `email`: String (email format, optional)
-- `mobileNumber`: String (optional)
-- `residentialAddress`: String (optional)
-- `postalAddress`: String (optional)
-- `employer`: String (optional)
-- `occupation`: String (optional)
-- `isPIP`: Boolean (optional)
-- `PIPCapacity`: String (required if `isPIP` is true)
-- `sourceOfIncome`: Array of `Capital Sources Enums` (optional)
-- `otherSourceOfIncome`: String (required if `sourceOfIncome` includes `Other`)
-- `sourceOfFunds`: Array of `Capital Sources Enums` (optional)
-- `otherSourceOfFunds`: String (required if `sourceOfFunds` includes `Other`)
+###### `professionalInformation` Object
 
-###### File fields
+- `employer`: String, optional
+- `occupation`: String, optional
+- `sourceOfIncome`: Array of `Capital Sources Enums`, optional
+- `otherSourceOfIncome`: String, optional
+- `sourceOfFunds`: Array of `Capital Sources Enums`, optional
+- `otherSourceOfFunds`: String, optional
 
-The following file fields can also be patched. Files must be sent as base64 data URL strings in the following format:
+### Validation Logic
 
-```plaintext
-data:<mime-type>;base64,<base64-content>
-```
+1. **Deactivate and update are mutually exclusive**
+   - `deactivate: true` cannot be sent together with `personalInformation`, `professionalInformation`, or `product`.
+   - If both are provided, the request returns `400 - Cannot deactivate and update individual information simultaneously`.
 
-Example:
+2. **At least one patchable field must be provided**
+   - At least one defined field must be provided in `personalInformation`, `professionalInformation`, or `product`.
+   - Empty objects without defined fields return `400 - No valid fields provided for update`.
 
-```plaintext
-data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD...
-```
+3. **Name alias validation**
+   - `firstNames` is the preferred field.
+   - `fullNames` is supported as a legacy alias.
+   - If both `firstNames` and `fullNames` are provided, they must contain the same value.
 
-Raw base64 without the `data:<mime-type>;base64,` prefix will be rejected.
+4. **Identity document validation**
+   - The endpoint derives the individual’s top-level `individualId` from the final merged nationality value.
+   - If the final merged `nationality` matches the business localisation, `idNumber` is required.
+   - If the final merged `nationality` does not match the business localisation, `passportNumber` is required.
+   - If the required field is missing, the endpoint returns a specific error:
+     - `idNumber is required for the specified nationality`
+     - `passportNumber is required for the specified nationality`
 
-Each file is limited to the configured upload limit, currently `20MB`.
+5. **PIP validation**
+   - If the final merged value of `isPIP` is `true`, `PIPCapacity` is required and cannot be empty.
 
-- `proofOfResidence`: Base64 data URL (optional)
-- `imageOfIdDocument`: Base64 data URL (optional)
-- `imageOfPassport`: Base64 data URL (optional)
-- `proofOfFunds`: Base64 data URL (optional)
-- `bankConfirmationLetter`: Base64 data URL (optional)
-- `bankStatement`: Base64 data URL (optional)
-- `proofOfIncome`: Base64 data URL (optional)
-- `taxRegistrationCertificate`: Base64 data URL (optional)
+6. **Financial source validation**
+   - If the final merged `sourceOfIncome` includes `Other`, `otherSourceOfIncome` is required and cannot be empty.
+   - If the final merged `sourceOfFunds` includes `Other`, `otherSourceOfFunds` is required and cannot be empty.
 
-Uploaded files are stored in Google Cloud Storage. The individual record stores file references, not raw base64 content.
+7. **Automatic re-screening**
+   - Any change to `firstNames`, `fullNames`, `surname`, or `dateOfBirth` triggers automatic Dow Jones re-screening.
+   - Changes to fields such as `product`, `employer`, `occupation`, `sourceOfIncome`, addresses, files, or contact details do not trigger re-screening.
 
-#### Validation Logic
+8. **File validation**
+   - File fields must be valid base64 data URLs.
+   - File size validation mirrors the `/add-individual` API validation limit.
 
-1. `personalInformation` and `deactivate: true` are mutually exclusive — you cannot update personal information and deactivate in the same request.
-2. At least one updatable field must be provided in `personalInformation` when patching data. Otherwise the request returns `400 - No valid fields provided for update`.
-3. `firstNames` is the preferred field for updating names.
-4. `fullNames` is supported as a backwards-compatible alias for `firstNames`.
-5. If both `firstNames` and `fullNames` are provided, they must contain the same value.
-6. Any change to `firstNames`, `fullNames`, `surname`, or `dateOfBirth` triggers automatic re-screening of the individual.
-7. Changes to non-screening fields, such as contact details, addresses, source of income/funds, PIP fields, or files, do not trigger re-screening.
-8. `email` must be a valid email address when provided.
-9. `nationality` must be a valid country enum when provided.
-10. If `isPIP` is true, `PIPCapacity` must be provided and cannot be empty.
-11. If `sourceOfIncome` includes `Other`, `otherSourceOfIncome` must be provided and cannot be empty.
-12. If `sourceOfFunds` includes `Other`, `otherSourceOfFunds` must be provided and cannot be empty.
-13. File fields must be valid base64 data URL strings and must not exceed the configured upload limit.
+### Usage
 
-#### Usage
-
-Example Request Body — Update preferred name field and trigger re-screening:
+Example Request Body — Update personal information:
 
 ```json
 {
@@ -583,37 +611,47 @@ Example Request Body — Update preferred name field and trigger re-screening:
 }
 ```
 
-Example Request Body — Update legacy `fullNames` field and trigger re-screening:
+Example Request Body — Update professional information:
 
 ```json
 {
-  "personalInformation": {
-    "fullNames": "John Michael"
+  "professionalInformation": {
+    "employer": "Example Employer",
+    "occupation": "Developer",
+    "sourceOfIncome": ["Salary"],
+    "sourceOfFunds": ["Savings"]
   }
 }
 ```
 
-
-Example Request Body — Update PIP information:
+Example Request Body — Update product:
 
 ```json
 {
-  "personalInformation": {
-    "isPIP": true,
-    "PIPCapacity": "Senior public official"
-  }
+  "product": "Unit Trust"
 }
 ```
 
-Example Request Body — Update source of income/funds with `Other`:
+Example Request Body — Update personal information, professional information, and product:
 
 ```json
 {
+  "product": "Unit Trust",
   "personalInformation": {
-    "sourceOfIncome": ["Other"],
-    "otherSourceOfIncome": "Consulting work",
-    "sourceOfFunds": ["Other"],
-    "otherSourceOfFunds": "Sale of assets"
+    "title": "Mr",
+    "firstNames": "John",
+    "surname": "Doe",
+    "dateOfBirth": "1990-01-01",
+    "nationality": "Namibia",
+    "idNumber": "12345678910",
+    "email": "john@example.com",
+    "mobileNumber": "+264812345678"
+  },
+  "professionalInformation": {
+    "employer": "Example Employer",
+    "occupation": "Developer",
+    "sourceOfIncome": ["Salary"],
+    "sourceOfFunds": ["Savings"]
   }
 }
 ```
@@ -623,9 +661,14 @@ Example Request Body — Update file fields:
 ```json
 {
   "personalInformation": {
-    "proofOfResidence": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD...",
-    "imageOfIdDocument": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD...",
-    "bankStatement": "data:application/pdf;base64,JVBERi0xLjQKJ..."
+    "proofOfResidence": "data:application/pdf;base64,...",
+    "imageOfIdDocument": "data:image/jpeg;base64,...",
+    "imageOfPassport": "data:image/jpeg;base64,...",
+    "proofOfFunds": "data:application/pdf;base64,...",
+    "bankConfirmationLetter": "data:application/pdf;base64,...",
+    "bankStatement": "data:application/pdf;base64,...",
+    "proofOfIncome": "data:application/pdf;base64,...",
+    "taxRegistrationCertificate": "data:application/pdf;base64,..."
   }
 }
 ```
@@ -652,18 +695,10 @@ Example Request Body — Deactivate individual:
 }
 ```
 
-- The response will contain the following fields:
-  - `message` (string): Confirmation message.
-  - `rescreened` (boolean): `true` if the change triggered automatic re-screening, otherwise `false`.
+The response will contain the following fields:
 
-Example response for a non-screening update:
-
-```json
-{
-  "message": "Individual updated successfully",
-  "rescreened": false
-}
-```
+- `message`: String. Confirmation message.
+- `rescreened`: Boolean. `true` if the change triggered automatic re-screening, otherwise `false`.
 
 #### Deactivation success
 
@@ -681,14 +716,59 @@ Example response for a non-screening update:
 - Status: 400 / 401 / 404 / 500
 - Content-Type: application/json
 
+Example validation error:
+
 ```json
 {
   "error": "Invalid request body",
   "details": [
     {
       "code": "custom",
-      "message": "Cannot deactivate and update personal information simultaneously",
+      "message": "Cannot deactivate and update individual information simultaneously",
       "path": []
+    }
+  ]
+}
+```
+
+Example missing local identity field error:
+
+```json
+{
+  "error": "idNumber is required for the specified nationality",
+  "details": [
+    {
+      "field": "idNumber",
+      "nationality": "Namibia"
+    }
+  ]
+}
+```
+
+Example missing foreign identity field error:
+
+```json
+{
+  "error": "passportNumber is required for the specified nationality",
+  "details": [
+    {
+      "field": "passportNumber",
+      "nationality": "South Africa"
+    }
+  ]
+}
+```
+
+Example financial source validation error:
+
+```json
+{
+  "error": "Invalid request body",
+  "details": [
+    {
+      "code": "custom",
+      "message": "Other source of income is required and cannot be empty when 'Other' is a source of income.",
+      "path": ["professionalInformation", "otherSourceOfIncome"]
     }
   ]
 }
@@ -702,32 +782,29 @@ Example file validation error:
   "details": [
     {
       "code": "custom",
-      "message": "File size exceeds 20MB limit for proofOfResidence. File size: 20.1MB",
-      "path": ["personalInformation", "proofOfResidence"]
-    }
-  ]
-}
-```
-
-Example invalid base64 error:
-
-```json
-{
-  "error": "Invalid request body",
-  "details": [
-    {
-      "code": "custom",
-      "message": "Invalid base64 format for imageOfIdDocument",
+      "message": "File size exceeds 10MB limit for imageOfIdDocument. File size: 10.5MB",
       "path": ["personalInformation", "imageOfIdDocument"]
     }
   ]
 }
 ```
 
-- The response will contain the following fields:
-  - `error` (string): message describing the error. Common values: `Invalid request type`, `Invalid uid`, `Invalid request body`, `No valid fields provided for update`, `Individual not found`, `Failed to update individual`.
-  - `details` (array OR undefined): list of objects describing validation errors. Each item includes the error `code`, `message` describing the error, and the `path`.
+The error response may contain the following fields:
 
+- `error`: String. Message describing the error.
+- `details`: Array or undefined. List of validation error objects or additional context.
+
+Common error values include:
+
+- `Invalid request type`
+- `Invalid uid`
+- `Invalid request body`
+- `No valid fields provided for update`
+- `idNumber is required for the specified nationality`
+- `passportNumber is required for the specified nationality`
+- `Individuals module is not enabled for this business`
+- `Individual not found`
+- `Failed to update individual`
 
 <a id="add-entity"></a>
 
