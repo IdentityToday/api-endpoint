@@ -541,14 +541,16 @@ PATCH /patch-individual?id={123-abc-987-zyx}
 - `postalAddress`: String, optional
 - `isPIP`: Boolean, optional
 - `PIPCapacity`: String, required if the final merged value of `isPIP` is `true`
-- `proofOfResidence`: Base64, optional
-- `imageOfIdDocument`: Base64, optional
-- `imageOfPassport`: Base64, optional
-- `proofOfFunds`: Base64, optional
-- `bankConfirmationLetter`: Base64, optional
-- `bankStatement`: Base64, optional
-- `proofOfIncome`: Base64, optional
-- `taxRegistrationCertificate`: Base64, optional
+- `proofOfResidence`: Base64 data URL, optional
+- `imageOfIdDocument`: Base64 data URL, optional
+- `imageOfPassport`: Base64 data URL, optional
+- `proofOfFunds`: Base64 data URL, optional
+- `bankConfirmationLetter`: Base64 data URL, optional
+- `bankStatement`: Base64 data URL, optional
+- `proofOfIncome`: Base64 data URL, optional
+- `taxRegistrationCertificate`: Base64 data URL, optional
+
+File fields must be valid base64 data URLs in the `data:<mime>;base64,...` format. File size validation uses the configured 10MB upload limit.
 
 ###### `professionalInformation` Object
 
@@ -565,8 +567,9 @@ PATCH /patch-individual?id={123-abc-987-zyx}
    - `deactivate: true` cannot be sent together with `personalInformation`, `professionalInformation`, or `product`.
    - If both are provided, the request returns `400 - Cannot deactivate and update individual information simultaneously`.
 
-2. **At least one patchable field must be provided**
-   - At least one defined field must be provided in `personalInformation`, `professionalInformation`, or `product`.
+2. **At least one patchable field must be provided for updates**
+   - A request containing only `{ "deactivate": true }` is valid and will not trigger the `400 - No valid fields provided for update` error.
+   - When `deactivate` is false or absent, at least one defined patchable field must be provided inside `personalInformation`, `professionalInformation`, or `product`.
    - Empty objects without defined fields return `400 - No valid fields provided for update`.
 
 3. **Name alias validation**
@@ -575,9 +578,10 @@ PATCH /patch-individual?id={123-abc-987-zyx}
    - If both `firstNames` and `fullNames` are provided, they must contain the same value.
 
 4. **Identity document validation**
-   - The endpoint derives the individual’s top-level `individualId` from the final merged nationality value.
-   - If the final merged `nationality` matches the business localisation, `idNumber` is required.
-   - If the final merged `nationality` does not match the business localisation, `passportNumber` is required.
+   - The business's country of registration is the country configured for the business record and is used to determine whether the individual is local or foreign for identity-document purposes.
+   - The endpoint derives the individual’s top-level `individualId` from the final merged `nationality` value.
+   - If the final merged `nationality` matches the business's country of registration, `idNumber` is required.
+   - If the final merged `nationality` does not match the business's country of registration, `passportNumber` is required.
    - If the required field is missing, the endpoint returns a specific error:
      - `idNumber is required for the specified nationality`
      - `passportNumber is required for the specified nationality`
@@ -594,8 +598,8 @@ PATCH /patch-individual?id={123-abc-987-zyx}
    - Changes to fields such as `product`, `employer`, `occupation`, `sourceOfIncome`, addresses, files, or contact details do not trigger re-screening.
 
 8. **File validation**
-   - File fields must be valid base64 data URLs.
-   - File size validation mirrors the `/add-individual` API validation limit.
+   - File fields must be valid base64 data URLs in the `data:<mime>;base64,...` format.
+   - File size validation uses the configured 10MB upload limit.
 
 ### Usage
 
@@ -619,7 +623,7 @@ Example Request Body — Update professional information:
     "employer": "Example Employer",
     "occupation": "Developer",
     "sourceOfIncome": ["Salary"],
-    "sourceOfFunds": ["Savings"]
+    "sourceOfFunds": ["Investment income/returns"]
   }
 }
 ```
@@ -651,7 +655,7 @@ Example Request Body — Update personal information, professional information, 
     "employer": "Example Employer",
     "occupation": "Developer",
     "sourceOfIncome": ["Salary"],
-    "sourceOfFunds": ["Savings"]
+    "sourceOfFunds": ["Investment income/returns"]
   }
 }
 ```
@@ -738,8 +742,9 @@ Example missing local identity field error:
   "error": "idNumber is required for the specified nationality",
   "details": [
     {
-      "field": "idNumber",
-      "nationality": "Namibia"
+      "code": "missing_required_identity_field",
+      "message": "idNumber is required for the specified nationality",
+      "path": ["idNumber"]
     }
   ]
 }
@@ -752,8 +757,9 @@ Example missing foreign identity field error:
   "error": "passportNumber is required for the specified nationality",
   "details": [
     {
-      "field": "passportNumber",
-      "nationality": "South Africa"
+      "code": "missing_required_identity_field",
+      "message": "passportNumber is required for the specified nationality",
+      "path": ["passportNumber"]
     }
   ]
 }
@@ -792,7 +798,7 @@ Example file validation error:
 The error response may contain the following fields:
 
 - `error`: String. Message describing the error.
-- `details`: Array or undefined. List of validation error objects or additional context.
+- `details`: Array or undefined. List of validation error objects or additional context. Validation errors use `code`, `message`, and `path` where applicable.
 
 Common error values include:
 
