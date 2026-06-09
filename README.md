@@ -469,9 +469,13 @@ Example Request Body:
 
 ## Patch individual
 
-This endpoint is used to update an existing individual submission, or to deactivate an individual. It is an HTTPS PATCH request to the specified URL. The individual to update is identified by their `uid` (returned from `/add-individual`) provided as a query parameter.
+This endpoint is used to update an existing individual submission, or to deactivate an individual. It is an HTTPS `PATCH` request to the specified URL.
 
-If a name (`fullNames` or `surname`) or `dateOfBirth` change is detected, the individual will be automatically re-screened against Dow Jones and the underlying association/case will be replaced.
+The individual to update is identified by their `uid` returned from `/add-individual`, provided as a query parameter.
+
+If a first name (`firstNames` or the legacy alias `fullNames`), `surname`, or `dateOfBirth` change is detected, the individual will automatically be re-screened against Dow Jones and the underlying association/case will be replaced.
+
+`product` is patched as a top-level field, matching the `/add-individual` request structure.
 
 ### Request
 
@@ -479,41 +483,196 @@ If a name (`fullNames` or `surname`) or `dateOfBirth` change is detected, the in
 
 ```plaintext
 PATCH /patch-individual?id={123-abc-987-zyx}
-
 ```
 
 #### Query Parameters
 
-- `id`: (string, required) The `uid` of the individual to update.
+- `id`: String, required. The `uid` of the individual to update.
 
-#### Request Body
+#### Data Structure
+
+##### Enums and Types
+
+###### Capital Sources Enums
+
+- Business Proceeds
+- Commission
+- Foreign Remittance
+- Savings
+- Salary
+- Bonus
+- Consultancy fees
+- Allowance / Donation
+- Inheritance
+- Dividends / Profit share
+- Board and sitting fees
+- Rental income
+- Investment income/returns
+- Pension
+- Sale of property
+- Loan
+- Other
 
 ##### Schema Structure
 
-###### `PatchIndividualSchema` (Object)
+###### `PatchIndividualSchema` Object
 
-- `personalInformation` (Object, optional)
-  - `fullNames`: String (optional)
-  - `surname`: String (optional)
-  - `dateOfBirth`: String (optional) — ISO date format (e.g. `YYYY-MM-DD`)
-- `deactivate`: Boolean (optional) — when `true`, deactivates the individual.
+- `personalInformation`: Object, optional
+- `professionalInformation`: Object, optional
+- `product`: String, optional
+- `deactivate`: Boolean, optional. When `true`, deactivates the individual.
 
-###### Validation Logic
+###### `personalInformation` Object
 
-1. `personalInformation` and `deactivate: true` are mutually exclusive — you cannot update personal information and deactivate in the same request.
-2. At least one updatable field must be provided in `personalInformation` (otherwise the request returns `400 - No valid fields provided for update`).
-3. Any change to `fullNames`, `surname` or `dateOfBirth` triggers automatic re-screening of the individual.
+- `title`: String, optional
+- `firstNames`: String, optional
+- `fullNames`: String, optional. Legacy alias for `firstNames`.
+- `surname`: String, optional
+- `dateOfBirth`: Date, optional. ISO date format, for example `YYYY-MM-DD`
+- `nationality`: Enum ([Country Enums](COUNTRIES.md#country-enums)), optional
+- `idNumber`: String, optional
+- `passportNumber`: String, optional
+- `passportExpiryDate`: String, optional
+- `foreignNationalIDNumber`: String, optional
+- `taxIdentificationNumber`: String, optional
+- `email`: String, email format, optional
+- `mobileNumber`: String, optional
+- `residentialAddress`: String, optional
+- `postalAddress`: String, optional
+- `isPIP`: Boolean, optional
+- `PIPCapacity`: String, required if the final merged value of `isPIP` is `true`
+- `proofOfResidence`: Base64 data URL, optional
+- `imageOfIdDocument`: Base64 data URL, optional
+- `imageOfPassport`: Base64 data URL, optional
+- `proofOfFunds`: Base64 data URL, optional
+- `bankConfirmationLetter`: Base64 data URL, optional
+- `bankStatement`: Base64 data URL, optional
+- `proofOfIncome`: Base64 data URL, optional
+- `taxRegistrationCertificate`: Base64 data URL, optional
 
-#### Usage
+File fields must be valid base64 data URLs in the `data:<mime>;base64,...` format. File size validation uses the configured 10MB upload limit.
+
+###### `professionalInformation` Object
+
+- `employer`: String, optional
+- `occupation`: String, optional
+- `sourceOfIncome`: Array of `Capital Sources Enums`, optional
+- `otherSourceOfIncome`: String, optional
+- `sourceOfFunds`: Array of `Capital Sources Enums`, optional
+- `otherSourceOfFunds`: String, optional
+
+### Validation Logic
+
+1. **Deactivate and update are mutually exclusive**
+   - `deactivate: true` cannot be sent together with `personalInformation`, `professionalInformation`, or `product`.
+   - If both are provided, the request returns `400 - Cannot deactivate and update individual information simultaneously`.
+
+2. **At least one patchable field must be provided for updates**
+   - A request containing only `{ "deactivate": true }` is valid and will not trigger the `400 - No valid fields provided for update` error.
+   - When `deactivate` is false or absent, at least one defined patchable field must be provided inside `personalInformation`, `professionalInformation`, or `product`.
+   - Empty objects without defined fields return `400 - No valid fields provided for update`.
+
+3. **Name alias validation**
+   - `firstNames` is the preferred field.
+   - `fullNames` is supported as a legacy alias.
+   - If both `firstNames` and `fullNames` are provided, they must contain the same value.
+
+4. **Identity document validation**
+   - The business's country of registration is the country configured for the business record and is used to determine whether the individual is local or foreign for identity-document purposes.
+   - The endpoint derives the individual’s top-level `individualId` from the final merged `nationality` value.
+   - If the final merged `nationality` matches the business's country of registration, `idNumber` is required.
+   - If the final merged `nationality` does not match the business's country of registration, `passportNumber` is required.
+   - If the required field is missing, the endpoint returns a specific error:
+     - `idNumber is required for the specified nationality`
+     - `passportNumber is required for the specified nationality`
+
+5. **PIP validation**
+   - If the final merged value of `isPIP` is `true`, `PIPCapacity` is required and cannot be empty.
+
+6. **Financial source validation**
+   - If the final merged `sourceOfIncome` includes `Other`, `otherSourceOfIncome` is required and cannot be empty.
+   - If the final merged `sourceOfFunds` includes `Other`, `otherSourceOfFunds` is required and cannot be empty.
+
+7. **Automatic re-screening**
+   - Any change to `firstNames`, `fullNames`, `surname`, or `dateOfBirth` triggers automatic Dow Jones re-screening.
+   - Changes to fields such as `product`, `employer`, `occupation`, `sourceOfIncome`, addresses, files, or contact details do not trigger re-screening.
+
+8. **File validation**
+   - File fields must be valid base64 data URLs in the `data:<mime>;base64,...` format.
+   - File size validation uses the configured 10MB upload limit.
+
+### Usage
 
 Example Request Body — Update personal information:
 
 ```json
 {
   "personalInformation": {
-    "fullNames": "John Michael",
+    "firstNames": "John Michael",
     "surname": "Doe",
     "dateOfBirth": "1990-01-01"
+  }
+}
+```
+
+Example Request Body — Update professional information:
+
+```json
+{
+  "professionalInformation": {
+    "employer": "Example Employer",
+    "occupation": "Developer",
+    "sourceOfIncome": ["Salary"],
+    "sourceOfFunds": ["Investment income/returns"]
+  }
+}
+```
+
+Example Request Body — Update product:
+
+```json
+{
+  "product": "Unit Trust"
+}
+```
+
+Example Request Body — Update personal information, professional information, and product:
+
+```json
+{
+  "product": "Unit Trust",
+  "personalInformation": {
+    "title": "Mr",
+    "firstNames": "John",
+    "surname": "Doe",
+    "dateOfBirth": "1990-01-01",
+    "nationality": "Namibia",
+    "idNumber": "12345678910",
+    "email": "john@example.com",
+    "mobileNumber": "+264812345678"
+  },
+  "professionalInformation": {
+    "employer": "Example Employer",
+    "occupation": "Developer",
+    "sourceOfIncome": ["Salary"],
+    "sourceOfFunds": ["Investment income/returns"]
+  }
+}
+```
+
+Example Request Body — Update file fields:
+
+```json
+{
+  "personalInformation": {
+    "proofOfResidence": "data:application/pdf;base64,...",
+    "imageOfIdDocument": "data:image/jpeg;base64,...",
+    "imageOfPassport": "data:image/jpeg;base64,...",
+    "proofOfFunds": "data:application/pdf;base64,...",
+    "bankConfirmationLetter": "data:application/pdf;base64,...",
+    "bankStatement": "data:application/pdf;base64,...",
+    "proofOfIncome": "data:application/pdf;base64,...",
+    "taxRegistrationCertificate": "data:application/pdf;base64,..."
   }
 }
 ```
@@ -540,9 +699,10 @@ Example Request Body — Deactivate individual:
 }
 ```
 
-- The response will contain the following fields:
-  - `message` (string): Confirmation message.
-  - `rescreened` (boolean): `true` if the change triggered an automatic re-screening (name or date of birth change), otherwise `false`.
+The response will contain the following fields:
+
+- `message`: String. Confirmation message.
+- `rescreened`: Boolean. `true` if the change triggered automatic re-screening, otherwise `false`.
 
 #### Deactivation success
 
@@ -560,22 +720,97 @@ Example Request Body — Deactivate individual:
 - Status: 400 / 401 / 404 / 500
 - Content-Type: application/json
 
+Example validation error:
+
 ```json
 {
   "error": "Invalid request body",
   "details": [
     {
       "code": "custom",
-      "message": "Cannot deactivate and update personal information simultaneously",
+      "message": "Cannot deactivate and update individual information simultaneously",
       "path": []
     }
   ]
 }
 ```
 
-- The response will contain the following fields:
-  - `error` (string): message describing the error. Common values: `Invalid request type`, `Invalid uid`, `Invalid request body`, `No valid fields provided for update`, `Individual not found`, `Failed to update individual`.
-  - `details` (array OR undefined): list of objects describing validation errors. Each item includes the error `code`, `message` describing the error and the `path`.
+Example missing local identity field error:
+
+```json
+{
+  "error": "idNumber is required for the specified nationality",
+  "details": [
+    {
+      "code": "missing_required_identity_field",
+      "message": "idNumber is required for the specified nationality",
+      "path": ["idNumber"]
+    }
+  ]
+}
+```
+
+Example missing foreign identity field error:
+
+```json
+{
+  "error": "passportNumber is required for the specified nationality",
+  "details": [
+    {
+      "code": "missing_required_identity_field",
+      "message": "passportNumber is required for the specified nationality",
+      "path": ["passportNumber"]
+    }
+  ]
+}
+```
+
+Example financial source validation error:
+
+```json
+{
+  "error": "Invalid request body",
+  "details": [
+    {
+      "code": "custom",
+      "message": "Other source of income is required and cannot be empty when 'Other' is a source of income.",
+      "path": ["professionalInformation", "otherSourceOfIncome"]
+    }
+  ]
+}
+```
+
+Example file validation error:
+
+```json
+{
+  "error": "Invalid request body",
+  "details": [
+    {
+      "code": "custom",
+      "message": "File size exceeds 10MB limit for imageOfIdDocument. File size: 10.5MB",
+      "path": ["personalInformation", "imageOfIdDocument"]
+    }
+  ]
+}
+```
+
+The error response may contain the following fields:
+
+- `error`: String. Message describing the error.
+- `details`: Array or undefined. List of validation error objects or additional context. Validation errors use `code`, `message`, and `path` where applicable.
+
+Common error values include:
+
+- `Invalid request type`
+- `Invalid uid`
+- `Invalid request body`
+- `No valid fields provided for update`
+- `idNumber is required for the specified nationality`
+- `passportNumber is required for the specified nationality`
+- `Individuals module is not enabled for this business`
+- `Individual not found`
+- `Failed to update individual`
 
 <a id="add-entity"></a>
 
